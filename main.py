@@ -27,7 +27,7 @@ def get_access_token(client_id, client_secret):
     return access_token
 
 
-def search_for_nepali_artist(access_token, limit=50, offset=0):
+def search_for_nepali_artists(access_token, limit=50, offset=0):
     search_url="https://api.spotify.com/v1/search"
     headers={
         "Authorization":f"Bearer {access_token}"
@@ -64,44 +64,22 @@ def save_artists_to_csv(artists, access_token):
             followers_count = get_artist_followers(artist_id, access_token)
             writer.writerow([artist_name, genres, popularity, followers_count])
 
-def get_album_tracks(token, album_id):
-    url = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
-    headers = get_auth_header(token)
-    result = get(url, headers=headers)
-    json_result = json.loads(result.content)['items']
-    return json_result
+def main():
+    access_token = get_access_token(client_id, client_secret)
+    if access_token:
+        total_artists = 0
+        offset = 0
+        artists = []
+        while total_artists < 500:  # Adjust the desired number of artists
+            nepali_artists = search_for_nepali_artists(access_token, limit=50, offset=offset)
+            artists.extend(nepali_artists)
+            total_artists += len(nepali_artists)
+            offset += 50
+            if len(nepali_artists) < 50:
+                break
+        save_artists_to_csv(artists, access_token)
+    else:
+        print("Failed to obtain access token.")
 
-def save_artist_albums_to_csv(artist_name, albums):
-    with open(f"{artist_name}_albums.csv", mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow(['Album Name', 'Album ID'])
-        for album in albums:
-            writer.writerow([album['name'], album['id']])
-
-def save_album_tracks_to_csv(album_name, tracks):
-    with open(f"{album_name}_tracks.csv", mode='w', newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow(['Track Name', 'Track ID'])
-        for track in tracks:
-            writer.writerow([track['name'], track['id']])
-
-
-token = get_token()
-result=search_for_artist(token, "Sabin Rai")
-if result:
-    artist_id = result['id']
-    albums = get_artist_albums(token, artist_id)
-    for album in albums:
-        album_name = album['name']
-        album_id = album['id']
-        save_album_tracks_to_csv(album_name, get_album_tracks(token, album_id))
-    save_artist_albums_to_csv("Sabin_Rai", albums)
-        #tracks = get_album_tracks(token, album_id)
-        #print("Tracks:")
-        #for idx, track in enumerate(tracks):
-            #print(f"{idx+1}. {track['name']}")
-#artist_id=result['id']
-#songs=get_songs_by_artist(token, artist_id)
-
-#for idx,song in enumerate(songs):
-    #print(f"{idx+1}. {song['name']}")
+if __name__ == "__main__":
+    main()
