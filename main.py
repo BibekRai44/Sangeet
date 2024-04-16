@@ -26,35 +26,43 @@ def get_access_token(client_id, client_secret):
     access_token = token_data.get("access_token")
     return access_token
 
-def get_auth_header(token):
-    return {"Authorization":"Bearer "+token}
 
-def search_for_artist(token, artist_name):
-    url="https://api.spotify.com/v1/search"
-    headers=get_auth_header(token)
-    query=f"?q={artist_name}&type=artist&limit=1"
+def search_for_nepali_artist(access_token, limit=50, offset=0):
+    search_url="https://api.spotify.com/v1/search"
+    headers={
+        "Authorization":f"Bearer {access_token}"
+    }
+    parmas={
+        "q":"country:Nepal",
+        "type":"artist",
+        "limit":limit,
+        "offset":offset
+    }
 
-    query_url=url+query
-    result = get(query_url, headers=headers)
-    json_result = json.loads(result.content)['artists']['items']
-    if len(json_result)==0:
-        print("No artist found with such name")
-        return None
-    return json_result[0]
+    response=requests.get(search_url, headers=headers, params=parmas)
+    nepali_artists=response.json().get("artists", {}).get("items", [])
+    return nepali_artists
 
-def get_songs_by_artist(token, artist_id):
-    url=f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=NP"
-    headers=get_auth_header(token)
-    result = get(url, headers=headers)
-    json_result = json.loads(result.content)['tracks']
-    return json_result
+def get_artist_followers(artist_id, access_token):
+    followers_url = f"https://api.spotify.com/v1/artists/{artist_id}"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    response = requests.get(followers_url, headers=headers)
+    followers_count = response.json().get("followers", {}).get("total", "")
+    return followers_count
 
-def get_artist_albums(token, artist_id):
-    url = f"https://api.spotify.com/v1/artists/{artist_id}/albums?limit=50"
-    headers = get_auth_header(token)
-    result = get(url, headers=headers)
-    json_result = json.loads(result.content)['items']
-    return json_result
+def save_artists_to_csv(artists, access_token):
+    with open("nepali_artists_info.csv", mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Artist Name", "Genres", "Popularity", "Followers Count"])
+        for artist in artists:
+            artist_name = artist["name"]
+            genres = ", ".join(artist.get("genres", []))
+            popularity = artist.get("popularity", "")
+            artist_id = artist["id"]
+            followers_count = get_artist_followers(artist_id, access_token)
+            writer.writerow([artist_name, genres, popularity, followers_count])
 
 def get_album_tracks(token, album_id):
     url = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
