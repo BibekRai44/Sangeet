@@ -70,7 +70,7 @@ def main():
         total_artists = 0
         offset = 0
         artists = []
-        while total_artists < 500:  # Adjust the desired number of artists
+        while total_artists < 500:  
             nepali_artists = search_for_nepali_artists(access_token, limit=50, offset=offset)
             artists.extend(nepali_artists)
             total_artists += len(nepali_artists)
