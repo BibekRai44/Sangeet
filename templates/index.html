@@ -25,9 +25,6 @@
 
             var followersCount = document.getElementById("followersCount").value;
             var popularity = document.getElementById("popularity").value;
-
-            // Example: You can use AJAX to send the input values to the server and receive the predicted artist name
-            // Replace this with your actual implementation
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "/predict", true);
             xhr.setRequestHeader("Content-Type", "application/json");
