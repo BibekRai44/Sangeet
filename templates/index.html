@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist Name Predictor</title>
+    <!-- Required meta tags -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="sangeet sangraha">
+    <meta name="author" content="sangeet sangraha">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    nav ul li {
+        display: inline-block;
+        margin-left: 20px;
+    }
+    nav ul li:first-child {
+        margin-left: 0; 
+    }
+    nav ul li a {
+        text-decoration: none;
+        color: #007bff; 
+        font-weight: bold;
+    }
+    nav ul li a:hover {
+        text-decoration: underline;
+    }
+    footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            padding: 10px 0;
+        }
+    </style>
+    <title>Sangeet Sangraha</title>
 </head>
 <body>
-    <h1>Artist Name Predictor</h1>
-    <form id="predictionForm">
-        <label for="followersCount">Followers Count:</label>
-        <input type="number" id="followersCount" name="followersCount" required><br><br>
-        
-        <label for="popularity">Popularity:</label>
-        <input type="number" id="popularity" name="popularity" required><br><br>
-        
-        <button type="submit">Predict Artist Name</button>
-    </form>
-    
-    <div id="predictionResult"></div>
-
-    <script>
-        document.getElementById("predictionForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            var followersCount = document.getElementById("followersCount").value;
-            var popularity = document.getElementById("popularity").value;
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/predict", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        document.getElementById("predictionResult").innerHTML = "<p>Predicted Artist Name: " + response.artistName + "</p>";
-                    } else {
-                        document.getElementById("predictionResult").innerHTML = "<p>Error: Unable to predict artist name.</p>";
-                    }
-                }
-            };
-            xhr.send(JSON.stringify({ followersCount: followersCount, popularity: popularity }));
-        });
-    </script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="static/images/png/logo-no-background.png" height="40px" width="auto">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <ul>
+                <li><a href="{{url_for('artist_name_predictor')}}">Find Artist Name</a></li>
+                <li><a href=#>Find Similar Artist</a></li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <footer style="text-align: center;">Made by <a target="_blank" href="https://github.com/BibekRai44">Bibek Rai</a></footer>
 </body>
 </html>
