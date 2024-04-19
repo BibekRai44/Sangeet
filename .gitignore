@@ -2,4 +2,3 @@
 .DS_Store
 .gitattributes
 __pycache__
-predict_artist.pkl
