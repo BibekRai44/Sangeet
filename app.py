@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify,url_for
 import pickle
 app = Flask(__name__)
 
@@ -7,6 +7,10 @@ model=pickle.load(open('predict_artist.pkl','rb'))
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/artist_name_predictor')
+def artist_name_predictor():
+    return render_template('artist_name_predictor.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
