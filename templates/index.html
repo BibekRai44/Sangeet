@@ -44,7 +44,7 @@
     </style>
     <title>Sangeet Sangraha</title>
 </head>
-<body>
+<body class="index-body">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -55,7 +55,7 @@
             </button>
             <ul>
                 <li><a href="{{url_for('artist_name_predictor')}}">Find Artist Name</a></li>
-                <li><a href=#>Find Similar Artist</a></li>
+                <li><a href="{{url_for('suggest_artist')}}">Find Similar Artist</a></li>
             </ul>
         </div>
     </nav>
