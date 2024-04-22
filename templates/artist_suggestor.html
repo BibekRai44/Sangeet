@@ -47,8 +47,16 @@
         .form{
             justify-content: center;
             align-items: center;
-            margin: center;
+            margin-left: 500px;
 
+        }
+        .button{
+            justify-content: center;
+            align-items: center;
+            margin-left: 200px;
+        }
+        #predictionResult {
+            margin-left: 500px;
         }
     </style>
     <title>Sangeet Sangraha</title>
@@ -64,7 +72,7 @@
             </button>
             <ul>
                 <li><a href="{{url_for('artist_name_predictor')}}">Find Artist Name</a></li>
-                <li><a href=#>Find Similar Artist</a></li>
+                <li><a href="{{url_for('suggest_artist')}}">Find Similar Artist</a></li>
             </ul>
         </div>
     </nav>
@@ -76,7 +84,7 @@
                 <label for="artistname">Artist Name:</label>
                 <input type="text" id="artistname" name="artistname" required aria-label="Artist Name (must be a text)"><br><br>
                 
-                <button type="submit">Find Simialr Artist</button>
+                <button type="submit">Find Similar Artist</button>
             </form>
         </div>
         <div id="predictionResult"></div>
@@ -85,9 +93,9 @@
        document.getElementById("predictionForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    var followersCount = document.getElementById("artistname").value;
+    var artistname = document.getElementById("artistname").value;
     
-    if (followersCount <= 0 || popularity <= 0) {
+    if (typeof artistname !== "string") {
         alert("Artist Name should be text and in valid format.");
         return;
     }
@@ -100,17 +108,13 @@
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 var resultContainer = document.getElementById("predictionResult");
-                resultContainer.innerHTML = "<div class='result-content'><strong style='color: #007bff;'>Predicted Artist Name:</strong> " + response.artistName + "</div>";
-                resultContainer.style.display = "flex";
-                resultContainer.style.justifyContent = "center";
-                resultContainer.style.alignItems = "center";
-                resultContainer.style.height = "100vh";
+                resultContainer.innerHTML = "<div class='result-content'><strong style='color: #007bff;'>Similar Artist Names:</strong> " + response.artistNames.join(", ") + "</div>";
             } else {
-                document.getElementById("predictionResult").innerHTML = "<p>Error: Unable to predict artist name.</p>";
+                document.getElementById("predictionResult").innerHTML = "<p>Error: Unable to suggest artist name.</p>";
             }
         }
     };
-    xhr.send(JSON.stringify({ followersCount: followersCount, popularity: popularity }));
+    xhr.send(JSON.stringify({ artistname:artistname }));
 });
 
     </script>
